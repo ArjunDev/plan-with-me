@@ -5,7 +5,7 @@ const InputBar = () => {
   const { elements, setElements } = useContext(ElementsData); // global context state
   const [taskTitle, setTaskTitle] = useState('');
   const [taskDesc, setTaskDesc] = useState('');
-  const [taskPriority, setTaskPriority] = useState('');
+  const [taskPriority, setTaskPriority] = useState('Low');
   const [isModalVisible, setIsModalVisible] = useState(false); // State to control modal visibility
 
   const handleAddNewTaskBtn = () => {
@@ -15,7 +15,7 @@ const InputBar = () => {
   // Load elements from localStorage on component mount
   useEffect(() => {
     const storedElements = JSON.parse(localStorage.getItem('elements'));
-    console.log(storedElements); // Check if it's null or an empty array on refresh
+    //console.log(storedElements); // Check if it's null or an empty array on refresh
     if (storedElements && Array.isArray(storedElements)) {
       setElements(storedElements);
     } else {
@@ -33,6 +33,12 @@ const InputBar = () => {
 
 
   const handleSaveBtn = () => {
+
+    if (taskTitle === "" || taskDesc === "") {
+      alert("Please enter both Task title and Description.");
+      return
+    }
+
     setElements((prevElements) => [
       ...prevElements,
       {
@@ -41,8 +47,7 @@ const InputBar = () => {
         color: 'red',
         desc: taskDesc,
         priority: taskPriority,
-      },
-    ]);
+      }]);
     setTaskTitle('');
     setTaskDesc('');
     setTaskPriority('');
@@ -94,9 +99,9 @@ const InputBar = () => {
                 onChange={(e) => setTaskPriority(e.target.value)}
                 className='bg-blue-100 rounded ml-2'
               >
-                <option value="high">High</option>
-                <option value="medium">Medium</option>
-                <option value="low">Low</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
               </select>
             </div>
             <div className='flex justify-center items-center p-4 gap-4'>

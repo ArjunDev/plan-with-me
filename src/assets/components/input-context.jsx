@@ -6,11 +6,12 @@ export const ElementsData = createContext();
 export const InputContext = ({ children }) => {
  
   const [elements, setElements] = useState([]); 
-  const [addToPending, setAddToPending] = useState("")
+
+  //console.log(elements)
 
   return (
     <ElementsData.Provider 
-     value={{elements, setElements, addToPending, setAddToPending}}
+     value={{elements, setElements}}
     >
       {children}
     </ElementsData.Provider>

@@ -1,134 +1,205 @@
-import React, { useContext } from 'react';
-import { useState } from "react";
+import React, { useContext, useEffect, useState } from 'react';
 import { ElementsData } from './input-context';
+import EditTask from '../edit-task';
 
 function StatusColumns() {
-  const [draggedId, setDraggedId] = useState(null); 
-  const [draggedItem, setDraggedItem] = useState(null); 
-  // Track the ID of the dragged element
-  const { elements, setElements } = useContext(ElementsData);
-  // Manage draggable elements with their colors
+  
+  const { elements, setElements } = useContext(ElementsData);// Global state item
+  const [pendingTasks, setPendingTasks] = useState([]);
+  const [inProgressTasks, setInProgressTasks] = useState([]);
+  const [completedTasks, setCompletedTasks] = useState([]);
+  const [isEditing, setIsEditing] = useState(false); // Control edit mode
+  const [editingTask, setEditingTask] = useState(null); // Store task being edited
 
-  //console.log(elements);
+
+  // Distribute elements into respective columns based on color
+  useEffect(() => {
+    setPendingTasks(elements.filter((el) => el.color === 'red'));
+    setInProgressTasks(elements.filter((el) => el.color === 'orange'));
+    setCompletedTasks(elements.filter((el) => el.color === 'green'));
+  }, [elements]);
 
   const handleDragStart = (e, element) => {
-    console.log(element);
-    setDraggedItem(e.target);
-    setDraggedId(element.id); // Set the ID of the currently dragged element
+    e.dataTransfer.setData('text/plain', JSON.stringify(element));
+    //console.log(element)
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e, newColor) => {
     e.preventDefault();
-    const dropZone = e.target;
-    const dropZoneId = e.target.id; // Dynamically get the drop zone ID
-  
+    const draggedElement = JSON.parse(e.dataTransfer.getData('text/plain'));
+    //console.log(draggedElement)
     setElements((prevElements) =>
       prevElements.map((el) =>
-        el.id === draggedId
-          ? { ...el, color: getColorByDropZone(dropZoneId) }
-          : el
+        el.id === draggedElement.id ? { ...el, color: newColor } : el
       )
     );
-    dropZone.appendChild(draggedItem);
-  };
-  
-  const getColorByDropZone = (dropZoneId) => {
-    switch (dropZoneId) {
-      case "inprogress-col":
-        return "orange";
-      case "completed-col":
-        return "green";
-      default:
-        return "red";
-    }
   };
 
   const handleDragOver = (e) => {
-    e.preventDefault(); // Allow dropping
+    e.preventDefault();
   };
 
-  const handleInputChange = (id, field, value) => {
+  const handleDeleteTaskBtn = (taskId) => {
+    const updatedElements = elements.filter((el) => el.id !== taskId); // Filter out the task
+    setElements(updatedElements); // Update state
+    localStorage.setItem("elements", JSON.stringify(updatedElements)); 
+    // Update localStorage
+  };
+
+  const handleEditTaskBtn = (task) => {
+    //console.log(task)
+    setEditingTask(task);
+    setIsEditing(true);
+  };
+
+  const handleSaveTask = (updatedTask) => {
     setElements((prevElements) =>
-      prevElements.map((el) =>
-        el.id === id ? { ...el, [field]: value } : el
-      )
+      prevElements.map((el) => (el.id === updatedTask.id ? updatedTask : el))
     );
+    setIsEditing(false);
+    setEditingTask(null);
+  };
+
+  const handleCloseEdit = () => {
+    setIsEditing(false);
+    setEditingTask(null);
   };
 
   return (
-    <>
-      <div className="flex justify-center items-center gap-4 mt-8 max-w-full">
-        {/* Drop Zones */}
-        <div
-          className="flex justify-start items-center flex-col min-h-screen w-full border border-dashed border-cyan-500 gap-1 p-2"
-          id="pending-col"
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-        >
-          <span className="shadow-md shadow-red-300 p-2 mb-2 font-bold w-full flex justify-center items-center">Pending</span>
-          {/* Draggable Elements */}
-          {elements.map((element) => (
-            <div
-              key={element.id}
-              draggable
-              onDragStart={(e) => handleDragStart(e, element)}
-            >
-              <div
-                className="flex flex-col p-7 gap-2 bg-blue-100 rounded hover:cursor-grab"
-                style={{ borderBottom: `3px solid ${element.color}` }}
-              >
-                <input
-                  id="task-title"
-                  className="border shadow-md rounded p-2"
-                  type="text"
-                  value={element.task}
-                  onChange={(e) => handleInputChange(element.id, "task", e.target.value)}
-                />
-                <textarea
-                  id="task-desc"
-                  className="border shadow-m rounded p-2 min-h-40"
-                  type="text"
-                  value={element.desc}
-                  onChange={(e) => handleInputChange(element.id, "desc", e.target.value)}
-                />
-                <div>
-                  <label htmlFor="task-priority">Priority:</label>
-                  <select
-                    name="task-priority"
-                    id="task-priority"
-                    value={element.priority}
-                    onChange={(e) => handleInputChange(element.id, "priority", e.target.value)}
-                    className="bg-blue-50 rounded ml-2"
-                  >
-                    <option value="high">High</option>
-                    <option value="medium">Medium</option>
-                    <option value="low">Low</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div
-          className="flex justify-start items-center flex-col min-h-screen w-full border border-dashed border-cyan-500 gap-1 p-2"
-          id="inprogress-col"
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-        >
-          <span className="shadow-md shadow-yellow-300 p-2 mb-2 font-bold w-full flex justify-center items-center">InProgress</span>
-        </div>
-
-        <div
-          className="flex justify-start items-center flex-col min-h-screen w-full border border-dashed border-cyan-500 gap-1 p-2"
-          id="completed-col"
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-        >
-          <span className="shadow-md shadow-green-300 p-2 mb-2 font-bold w-full flex justify-center items-center">Completed</span>
-        </div>
+    <div className="flex justify-center items-center gap-4 mt-8 max-w-full">
+      {/* Render the InputBar modal when editing */}
+      {isEditing && (
+        <EditTask
+          task={editingTask}
+          onSave={handleSaveTask}
+          onClose={handleCloseEdit}
+        />
+      )}
+      {/* Pending Column */}
+      <div
+        className="flex justify-start items-center flex-col min-h-screen w-full border border-dashed border-cyan-500 gap-1 p-2"
+        id="pending-col"
+        onDragOver={handleDragOver}
+        onDrop={(e) => handleDrop(e, 'red')}
+      >
+        <span className="shadow-md shadow-red-300 p-2 mb-2 font-bold w-full flex justify-center items-center">
+          Pending
+        </span>
+        {pendingTasks.map((element) => (
+          <div
+            key={element.id}
+            draggable
+            onDragStart={(e) => handleDragStart(e, element)}
+            className="flex flex-col p-5 gap-2 bg-blue-100 rounded hover:cursor-grab"
+            style={{ borderBottom: `3px solid ${element.color}`}}
+          >
+          <p className="p-2 font-bold text-center">Task: {element.task}</p> 
+          <div>
+            <span className='font-bold mr-1.5 mb-1.5 text-base'>Description:</span>
+            <p className='text-xs'>{element.desc}</p>
+          </div>
+          <div>
+            <span className='font-bold mr-1.5 mb-1.5 text-base'>Priority: </span>
+            <span className='text-sm'>{element.priority}</span>
+          </div>
+          <div className='flex gap-2 justify-center items-center mt-1'>
+          <button 
+              id={element.id}
+              className="shadow-md shadow-red-300 rounded bg-red-500 w-auto p-2 hover:bg-red-400 font-bold hover:cursor-pointer"
+              onClick={() => handleDeleteTaskBtn(element.id)}>Delete</button>
+            <button
+              id={element.id}
+              className="shadow-md shadow-blue-300 rounded bg-blue-500 w-auto p-2 hover:bg-blue-400 font-bold hover:cursor-pointer"
+              onClick={()=>handleEditTaskBtn(element)}>Edit</button>
+          </div>
+          </div>
+        ))}
       </div>
-    </>
+
+      {/* InProgress Column */}
+      <div
+        className="flex justify-start items-center flex-col min-h-screen w-full border border-dashed border-cyan-500 gap-1 p-2"
+        id="inprogress-col"
+        onDragOver={handleDragOver}
+        onDrop={(e) => handleDrop(e, 'orange')}
+      >
+        <span className="shadow-md shadow-yellow-300 p-2 mb-2 font-bold w-full flex justify-center items-center">
+          InProgress
+        </span>
+        {inProgressTasks.map((element) => (
+          <div
+            key={element.id}
+            draggable
+            onDragStart={(e) => handleDragStart(e, element)}
+            className="flex flex-col p-7 gap-2 bg-blue-100 rounded hover:cursor-grab"
+            style={{ borderBottom: `3px solid ${element.color}` }}
+          >
+          <p className="p-2 font-bold text-center">Task: {element.task}
+          </p> 
+          <div>
+            <span className='font-bold mr-1.5 mb-1.5 text-base'>Description:</span>
+            <p className='text-xs'>{element.desc}</p>
+          </div>
+          <div>
+            <span className='font-bold mr-1.5 mb-1.5 text-base'>Priority:</span>
+            <span className='text-sm'>{element.priority}</span>
+          </div>
+          <div className='flex gap-2 justify-center items-center mt-1'>
+            <button 
+              id={element.id}
+              className="shadow-md shadow-red-300 rounded bg-red-500 w-auto p-2 hover:bg-red-400 font-bold hover:cursor-pointer"
+              onClick={() => handleDeleteTaskBtn(element.id)}>Delete</button>
+            <button
+              id={element.id}
+              className="shadow-md shadow-blue-300 rounded bg-blue-500 w-auto p-2 hover:bg-blue-400 font-bold hover:cursor-pointer"
+              onClick={()=>handleEditTaskBtn(element)}>Edit</button>
+          </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Completed Column */}
+      <div
+        className="flex justify-start items-center flex-col min-h-screen w-full border border-dashed border-cyan-500 gap-1 p-2"
+        id="completed-col"
+        onDragOver={handleDragOver}
+        onDrop={(e) => handleDrop(e, 'green')}
+      >
+        <span className="shadow-md shadow-green-300 p-2 mb-2 font-bold w-full flex justify-center items-center">
+          Completed
+        </span>
+        {completedTasks.map((element) => (
+          <div
+            key={element.id}
+            draggable
+            onDragStart={(e) => handleDragStart(e, element)}
+            className="flex flex-col p-7 gap-2 bg-blue-100 rounded hover:cursor-grab"
+            style={{ borderBottom: `3px solid ${element.color}` }}
+          >
+          <p className="p-2 font-bold text-center">Task: {element.task}
+          </p> 
+          <div>
+            <span className='font-bold mr-1.5 mb-1.5 text-base'>Description:</span>
+            <p className='text-xs'>{element.desc}</p>
+          </div>
+          <div>
+            <span className='font-bold mr-1.5 mb-1.5 text-base'>Priority:</span>
+            <span className='text-sm'>{element.priority}</span>
+          </div>
+          <div className='flex gap-2 justify-center items-center mt-1'>
+            <button 
+              id={element.id}
+              className="shadow-md shadow-red-300 rounded bg-red-500 w-auto p-2 hover:bg-red-400 font-bold hover:cursor-pointer"
+              onClick={() => handleDeleteTaskBtn(element.id)}>Delete</button>
+            <button
+              id={element.id}
+              className="shadow-md shadow-blue-300 rounded bg-blue-500 w-auto p-2 hover:bg-blue-400 font-bold hover:cursor-pointer"
+              onClick={()=>handleEditTaskBtn(element)}>Edit</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
