@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { ElementsData } from './input-context';
-import EditTask from '../edit-task';
+import EditTask from './edit-task-modal';
+import DeleteTask from './delete-task-modal';
 
 function StatusColumns() {
   
@@ -8,15 +9,29 @@ function StatusColumns() {
   const [pendingTasks, setPendingTasks] = useState([]);
   const [inProgressTasks, setInProgressTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
+  const [isDeleting, setIsDeleting] = useState(false); // Control edit mode
+  const [deletingTask, setDeletingTask] = useState(null); // Store task 
   const [isEditing, setIsEditing] = useState(false); // Control edit mode
   const [editingTask, setEditingTask] = useState(null); // Store task being edited
 
 
-  // Distribute elements into respective columns based on color
+  // Distribute elements into respective columns based on color and sorting based on priority 
   useEffect(() => {
-    setPendingTasks(elements.filter((el) => el.color === 'red'));
-    setInProgressTasks(elements.filter((el) => el.color === 'orange'));
-    setCompletedTasks(elements.filter((el) => el.color === 'green'));
+    //setPendingTasks(elements.filter((el) => el.color === 'red'));
+    const priorityOrder = {High: 1, Medium: 2, Low: 3};
+
+    const filteredPending = elements.filter((el) => el.color.toLowerCase() === 'red');
+    const sortedPendingTasks = filteredPending.sort((a, b)=> 
+    priorityOrder[a.priority]-priorityOrder[b.priority]);
+    setPendingTasks(sortedPendingTasks);
+    
+    const filteredInprogress = elements.filter((el) => el.color.toLowerCase() === 'orange');
+    const sortedInprogressTasks = filteredInprogress.sort((a,b)=>       priorityOrder[a.priority]-priorityOrder[b.priority]);
+    setInProgressTasks(sortedInprogressTasks);
+
+    const filteredCompleted = elements.filter((el) => el.color.toLowerCase() === 'green');
+    const sortedCompletedTasks = filteredCompleted.sort((a,b)=> priorityOrder[a.priority]-priorityOrder[b.priority]);
+    setCompletedTasks(sortedCompletedTasks);
   }, [elements]);
 
   const handleDragStart = (e, element) => {
@@ -39,13 +54,6 @@ function StatusColumns() {
     e.preventDefault();
   };
 
-  const handleDeleteTaskBtn = (taskId) => {
-    const updatedElements = elements.filter((el) => el.id !== taskId); // Filter out the task
-    setElements(updatedElements); // Update state
-    localStorage.setItem("elements", JSON.stringify(updatedElements)); 
-    // Update localStorage
-  };
-
   const handleEditTaskBtn = (task) => {
     //console.log(task)
     setEditingTask(task);
@@ -65,9 +73,28 @@ function StatusColumns() {
     setEditingTask(null);
   };
 
+
+  const handleDeleteTaskBtn = (taskId) => {
+    setDeletingTask(taskId);  // Set the task ID to be deleted
+    setIsDeleting(true);      // Show the Delete modal
+  };
+  
+  const handlePreceedDelete = (taskId) => {
+    const updatedElements = elements.filter((el) => el.id !== taskId); // Filter out the task by ID
+    setElements(updatedElements); // Update state
+    localStorage.setItem("elements", JSON.stringify(updatedElements));
+    // Update localStorage
+    setIsDeleting(false); // Close the modal after deletion
+  };
+  
+  const handleCancleDelete = () => {
+    setIsDeleting(false); // Close the modal without doing anything
+    setDeletingTask(null); // Clear the task ID
+  };
+
   return (
-    <div className="flex justify-center items-center gap-4 mt-8 max-w-full">
-      {/* Render the InputBar modal when editing */}
+    <div className="flex justify-between items-start gap-4 mt-8 w-full lg:w-[80%]">
+      {/* Render the EditTask modal when editing */}
       {isEditing && (
         <EditTask
           task={editingTask}
@@ -75,16 +102,27 @@ function StatusColumns() {
           onClose={handleCloseEdit}
         />
       )}
+      {/* Render the DeleteTask modal when deleting */}
+      {isDeleting && (
+        <DeleteTask
+          taskId={deletingTask}
+          onYes={handlePreceedDelete}
+          onNo={handleCancleDelete}
+        />
+      )}
       {/* Pending Column */}
       <div
-        className="flex justify-start items-center flex-col min-h-screen w-full border border-dashed border-cyan-500 gap-1 p-2"
+        className="flex flex-col min-h-screen flex-1 border border-dashed border-cyan-500 gap-1 p-2"
         id="pending-col"
         onDragOver={handleDragOver}
         onDrop={(e) => handleDrop(e, 'red')}
       >
-        <span className="shadow-md shadow-red-300 p-2 mb-2 font-bold w-full flex justify-center items-center">
-          Pending
-        </span>
+        <div>
+        <span className="shadow-md shadow-red-400 p-2 mb-2 font-bold w-full flex justify-center items-center">Pending
+        <span 
+          className='text-sm font-light ml-1'>- {pendingTasks.length} {pendingTasks.length > 1 ? "Items" : "Item"}
+        </span></span>
+        </div>
         {pendingTasks.map((element) => (
           <div
             key={element.id}
@@ -105,11 +143,11 @@ function StatusColumns() {
           <div className='flex gap-2 justify-center items-center mt-1'>
           <button 
               id={element.id}
-              className="shadow-md shadow-red-300 rounded bg-red-500 w-auto p-2 hover:bg-red-400 font-bold hover:cursor-pointer"
+              className="shadow-md shadow-red-300 rounded bg-red-500 w-auto p-1 hover:bg-red-400 font-bold hover:cursor-pointer"
               onClick={() => handleDeleteTaskBtn(element.id)}>Delete</button>
             <button
               id={element.id}
-              className="shadow-md shadow-blue-300 rounded bg-blue-500 w-auto p-2 hover:bg-blue-400 font-bold hover:cursor-pointer"
+              className="shadow-md shadow-blue-300 rounded bg-blue-500 w-auto p-1 hover:bg-blue-400 font-bold hover:cursor-pointer"
               onClick={()=>handleEditTaskBtn(element)}>Edit</button>
           </div>
           </div>
@@ -118,14 +156,17 @@ function StatusColumns() {
 
       {/* InProgress Column */}
       <div
-        className="flex justify-start items-center flex-col min-h-screen w-full border border-dashed border-cyan-500 gap-1 p-2"
+        className="flex flex-col min-h-screen flex-1 border border-dashed border-cyan-500 gap-1 p-2"
         id="inprogress-col"
         onDragOver={handleDragOver}
         onDrop={(e) => handleDrop(e, 'orange')}
       >
-        <span className="shadow-md shadow-yellow-300 p-2 mb-2 font-bold w-full flex justify-center items-center">
-          InProgress
-        </span>
+        <div>
+        <span className="shadow-md shadow-yellow-500 p-2 mb-2 font-bold w-full flex justify-center items-center">InProgress
+        <span 
+          className='text-sm font-light ml-1'>- {inProgressTasks.length} {inProgressTasks.length > 1 ? "Items" : "Item"}
+        </span></span>
+        </div>
         {inProgressTasks.map((element) => (
           <div
             key={element.id}
@@ -147,11 +188,11 @@ function StatusColumns() {
           <div className='flex gap-2 justify-center items-center mt-1'>
             <button 
               id={element.id}
-              className="shadow-md shadow-red-300 rounded bg-red-500 w-auto p-2 hover:bg-red-400 font-bold hover:cursor-pointer"
+              className="shadow-md shadow-red-300 rounded bg-red-500 w-auto p-1 hover:bg-red-400 font-bold hover:cursor-pointer"
               onClick={() => handleDeleteTaskBtn(element.id)}>Delete</button>
             <button
               id={element.id}
-              className="shadow-md shadow-blue-300 rounded bg-blue-500 w-auto p-2 hover:bg-blue-400 font-bold hover:cursor-pointer"
+              className="shadow-md shadow-blue-300 rounded bg-blue-500 w-auto p-1 hover:bg-blue-400 font-bold hover:cursor-pointer"
               onClick={()=>handleEditTaskBtn(element)}>Edit</button>
           </div>
           </div>
@@ -160,14 +201,17 @@ function StatusColumns() {
 
       {/* Completed Column */}
       <div
-        className="flex justify-start items-center flex-col min-h-screen w-full border border-dashed border-cyan-500 gap-1 p-2"
+        className="flex flex-col min-h-screen flex-1 border border-dashed border-cyan-500 gap-1 p-2"
         id="completed-col"
         onDragOver={handleDragOver}
         onDrop={(e) => handleDrop(e, 'green')}
       >
-        <span className="shadow-md shadow-green-300 p-2 mb-2 font-bold w-full flex justify-center items-center">
-          Completed
-        </span>
+        <div>
+        <span className="shadow-md shadow-green-500 p-2 mb-2 font-bold w-full flex justify-center items-center">Completed
+        <span 
+          className='text-sm font-light ml-1'>- {completedTasks.length} {completedTasks.length > 1 ? "Items" : "Item"}
+        </span></span>
+        </div>
         {completedTasks.map((element) => (
           <div
             key={element.id}
@@ -189,11 +233,11 @@ function StatusColumns() {
           <div className='flex gap-2 justify-center items-center mt-1'>
             <button 
               id={element.id}
-              className="shadow-md shadow-red-300 rounded bg-red-500 w-auto p-2 hover:bg-red-400 font-bold hover:cursor-pointer"
+              className="shadow-md shadow-red-300 rounded bg-red-500 w-auto p-1 hover:bg-red-400 font-bold hover:cursor-pointer"
               onClick={() => handleDeleteTaskBtn(element.id)}>Delete</button>
             <button
               id={element.id}
-              className="shadow-md shadow-blue-300 rounded bg-blue-500 w-auto p-2 hover:bg-blue-400 font-bold hover:cursor-pointer"
+              className="shadow-md shadow-blue-300 rounded bg-blue-500 w-auto p-1 hover:bg-blue-400 font-bold hover:cursor-pointer"
               onClick={()=>handleEditTaskBtn(element)}>Edit</button>
             </div>
           </div>

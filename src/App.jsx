@@ -6,12 +6,12 @@ import StatusColumns from "./assets/components/status-columns"
 function App() {
  
   return (
-  <InputContext>
-    <div className='flex flex-col items-center bg-blue-50'> 
-      <InputBar/>
-      <StatusColumns/>
-    </div>
-  </InputContext>
+    <InputContext>
+      <div className="flex flex-col items-center w-full bg-blue-50">
+        <InputBar />
+        <StatusColumns />
+      </div>
+    </InputContext>
   )
 }
 
