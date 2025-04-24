@@ -5,6 +5,7 @@ const InputBar = () => {
   const { elements, setElements } = useContext(ElementsData); // global context state
   const [taskTitle, setTaskTitle] = useState('');
   const [taskDesc, setTaskDesc] = useState('');
+  const [taskDueDate, setTaskDueDate] = useState('');
   const [taskPriority, setTaskPriority] = useState('Low');
   const [isModalVisible, setIsModalVisible] = useState(false); // State to control modal visibility
 
@@ -31,11 +32,14 @@ const InputBar = () => {
     }
   }, [elements]);
 
+  const handleDatePicker = (e) => {
+    setTaskDueDate(e.target.value);
+  };
 
   const handleSaveBtn = () => {
 
-    if (taskTitle === "" || taskDesc === "") {
-      alert("Please enter both Task title and Description.");
+    if (taskTitle === "" || taskDesc === "" || taskDueDate === "") {
+      alert("Please enter all the fields!");
       return
     }
 
@@ -47,10 +51,11 @@ const InputBar = () => {
         color: 'red',
         desc: taskDesc,
         priority: taskPriority,
+        dueDate: taskDueDate,
       }]);
     setTaskTitle('');
     setTaskDesc('');
-    setTaskPriority('');
+    setTaskPriority('Low');
     setIsModalVisible(false); // Hide the modal after saving
   };
 
@@ -58,20 +63,20 @@ const InputBar = () => {
     setIsModalVisible(false); // Hide the modal
   };
 
+  console.log("Task Due Date: ", taskDueDate)
+  console.log("Task Priority: ", taskPriority)
   return (
     <div className='mt-3'>
       <button
         className="shadow-md shadow-blue-300 rounded bg-blue-500 w-auto p-2 hover:bg-blue-400 font-bold hover:cursor-pointer"
         onClick={handleAddNewTaskBtn}
-      >
-        Add New Task
-      </button>
+      >Add New Task</button>
       {isModalVisible && (
         <div 
           className='fixed inset-0 flex items-center justify-center z-50'
         >
-          <div className='absolute inset-0 backdrop-blur-lg bg-black/30'>
-          </div> {/* Overlay */}
+        <div className='absolute inset-0 backdrop-blur-lg bg-black/30'>
+        </div> {/* Overlay */}
           <div 
             className='relative flex flex-col p-7 gap-2 bg-blue-50 shadow-md shadow-blue-300 rounded z-50'
           >
@@ -104,21 +109,24 @@ const InputBar = () => {
                 <option value="High">High</option>
               </select>
             </div>
+            <label>Due Date: <input 
+              type="date"
+              value={taskDueDate}
+              onChange={handleDatePicker}
+              className="border p-1 rounded mb-4"
+              />
+            </label>
             <div className='flex justify-center items-center p-4 gap-4'>
               <button
                 id='save-btn'
                 className="shadow-md shadow-blue-300 rounded bg-blue-500 min-w-fit p-2 hover:bg-blue-400 font-bold"
                 onClick={handleSaveBtn}
-              >
-                Save
-              </button>
+              >Save</button>
               <button
                 id='close-btn'
                 className="shadow-md shadow-blue-300 rounded bg-red-500 min-w-fit p-2 hover:bg-red-400 font-bold"
                 onClick={handleCloseBtn}
-              >
-                Close
-              </button>
+              >Close</button>
             </div>
           </div>
         </div>

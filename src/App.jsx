@@ -1,17 +1,24 @@
-import InputBar from "./assets/components/input-bar"
-import { InputContext } from "./assets/components/input-context"
-import StatusColumns from "./assets/components/status-columns"
+import React, { useContext } from 'react';
+import { ElementsData } from '../../planwithme/src/assets/kanban/input-context';
+import InputBar from '../../planwithme/src/assets/kanban/input-bar';
+import StatusColumns from '../../planwithme/src/assets/kanban/status-columns';
+import ProjectSummaryModal from '../../planwithme/src/assets/kanban/project-summary-modal';
 
 
 function App() {
  
+  const { projectSummaryModal } = useContext(ElementsData); 
+  // global context state
+  console.log(projectSummaryModal)
+
   return (
-    <InputContext>
-      <div className="flex flex-col items-center w-full bg-blue-50">
-        <InputBar />
-        <StatusColumns />
+      <div className="flex flex-col items-center w-full bg-blue-50 ">
+        {projectSummaryModal.kanban.isOpen && <ProjectSummaryModal/>}
+        <InputBar/>
+        <div className="w-full overflow-x-auto">
+          <StatusColumns />
+        </div>
       </div>
-    </InputContext>
   )
 }
 
