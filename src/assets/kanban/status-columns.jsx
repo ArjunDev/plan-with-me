@@ -88,7 +88,7 @@ function StatusColumns() {
   };
 
   return (
-    <div className="flex justify-between items-start sm:flex-1 gap-4 mt-8 w-full">
+    <div className="flex justify-between items-start sm:flex-1 gap-4 mt-8 w-full px-6">
       {/* Render the EditTask modal when editing */}
       {isEditing && (
         <EditTask
