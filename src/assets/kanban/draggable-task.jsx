@@ -1,5 +1,7 @@
 import React, { useContext } from "react";
 import { ElementsData } from './input-context';
+import { FaAngleRight, FaAngleDown } from "react-icons/fa"; // ✅ Correct way for react-icons
+
 
 
 const DraggableTask = ({ element, handleDragStart, handleDeleteTaskBtn, handleEditTaskBtn }) => {
@@ -29,11 +31,11 @@ const DraggableTask = ({ element, handleDragStart, handleDeleteTaskBtn, handleEd
           className="font-medium text-center"
         >{element.task}</div>
         <div 
-          className="h-full p-2 items-center justify-center">
+          className="p-2 h-full w-5 items-center justify-center">
           <div 
             onClick={() => hideTaskDetailsBtn(element.id)}
-            className="absolute right-0 top-0 cursor-pointer text-lg font-bold"
-          >{`>`}</div>
+            className="absolute right-0 top-0 cursor-pointer w-6 h-6"
+          >{ element.hideTaskDetails ? <FaAngleDown className="text-lg" /> : <FaAngleRight className="text-lg"/>}</div>
         </div>
         
       </div>
