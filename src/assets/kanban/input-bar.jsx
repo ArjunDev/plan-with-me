@@ -2,12 +2,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ElementsData } from './input-context';
 
 const InputBar = () => {
-  const { elements, setElements } = useContext(ElementsData); // global context state
+  const { elements, setElements } = useContext(ElementsData); 
+  // global context state
   const [taskTitle, setTaskTitle] = useState('');
   const [taskDesc, setTaskDesc] = useState('');
   const [taskDueDate, setTaskDueDate] = useState('');
   const [taskPriority, setTaskPriority] = useState('Low');
-  const [isModalVisible, setIsModalVisible] = useState(false); // State to control modal visibility
+  const [isModalVisible, setIsModalVisible] = useState(false); 
+  // State to control modal visibility
 
   const handleAddNewTaskBtn = () => {
     setIsModalVisible(true); // Show the modal
@@ -46,12 +48,14 @@ const InputBar = () => {
     setElements((prevElements) => [
       ...prevElements,
       {
-        id: prevElements.length + 1,
+        // to generate uniqe number ex: 1746121300490
+        id: Date.now(),
         task: taskTitle,
         color: 'red',
         desc: taskDesc,
         priority: taskPriority,
         dueDate: taskDueDate,
+        hideTaskDetails: false,
       }]);
     setTaskTitle('');
     setTaskDesc('');
@@ -63,22 +67,23 @@ const InputBar = () => {
     setIsModalVisible(false); // Hide the modal
   };
 
-  console.log("Task Due Date: ", taskDueDate)
-  console.log("Task Priority: ", taskPriority)
+  // console.log("Task Due Date: ", taskDueDate)
+  // console.log("Task Priority: ", taskPriority)
   return (
-    <div className='mt-3'>
+    <div className='mt-8'>
       <button
-        className="shadow-md shadow-blue-300 rounded bg-blue-500 w-auto p-2 hover:bg-blue-400 font-bold hover:cursor-pointer"
+        className="rounded bg-blue-600 w-auto p-2 hover:bg-blue-500 font-bold hover:cursor-pointer"
         onClick={handleAddNewTaskBtn}
       >Add New Task</button>
       {isModalVisible && (
         <div 
           className='fixed inset-0 flex items-center justify-center z-50'
         >
-        <div className='absolute inset-0 backdrop-blur-lg bg-black/30'>
+        <div 
+          className='absolute inset-0 backdrop-blur-sm bg-black/25'>
         </div> {/* Overlay */}
           <div 
-            className='relative flex flex-col p-7 gap-2 bg-blue-50 shadow-md shadow-blue-300 rounded z-50'
+            className='relative flex flex-col w-[85%] h-auto sm:w-[50%] sm:h-auto sm:gap-8 p-8 gap-4 bg-blue-50 shadow-lg shadow-blue-500 rounded-2xl z-50'
           >
             <input
               id='task-title'
@@ -102,7 +107,7 @@ const InputBar = () => {
                 id="task-priority"
                 value={taskPriority}
                 onChange={(e) => setTaskPriority(e.target.value)}
-                className='bg-blue-100 rounded ml-2'
+                className='border rounded ml-2 cursor-pointer px-2'
               >
                 <option value="Low">Low</option>
                 <option value="Medium">Medium</option>
@@ -113,10 +118,10 @@ const InputBar = () => {
               type="date"
               value={taskDueDate}
               onChange={handleDatePicker}
-              className="border p-1 rounded mb-4"
+              className="border p-1 rounded mb-4 cursor-pointer"
               />
             </label>
-            <div className='flex justify-center items-center p-4 gap-4'>
+            <div className='flex justify-center items-center p-2 gap-6'>
               <button
                 id='save-btn'
                 className="shadow-md shadow-blue-300 rounded bg-blue-500 min-w-fit p-2 hover:bg-blue-400 font-bold"

@@ -87,6 +87,7 @@ function StatusColumns() {
     setDeletingTask(null); // Clear the task ID
   };
 
+
   return (
     <div className="flex justify-between items-start sm:flex-1 gap-4 mt-8 w-full px-6">
       {/* Render the EditTask modal when editing */}
@@ -113,7 +114,7 @@ function StatusColumns() {
         onDrop={(e) => handleDrop(e, 'red')}
       >
         <div>
-        <span className="shadow-md bg-blue-100 shadow-red-400 p-2 mb-2 font-bold rounded w-full flex justify-center items-center">Pending
+        <span className="shadow-md bg-blue-50 shadow-red-400 p-2 mb-2 font-bold rounded w-full flex justify-center items-center">Pending
         <span 
           className='text-sm font-light ml-1'>- {pendingTasks.length} {pendingTasks.length > 1 ? "Items" : "Item"}
         </span></span>
@@ -137,7 +138,7 @@ function StatusColumns() {
         onDrop={(e) => handleDrop(e, 'orange')}
       >
         <div>
-        <span className="shadow-md bg-blue-100 shadow-yellow-500 p-2 mb-2 font-bold w-full rounded flex justify-center items-center">InProgress
+        <span className="shadow-md bg-blue-50 shadow-yellow-500 p-2 mb-2 font-bold w-full rounded flex justify-center items-center">InProgress
         <span 
           className='text-sm font-light ml-1'>- {inProgressTasks.length} {inProgressTasks.length > 1 ? "Items" : "Item"}
         </span></span>
@@ -161,7 +162,7 @@ function StatusColumns() {
         onDrop={(e) => handleDrop(e, 'green')}
       >
         <div>
-        <span className="shadow-md bg-blue-100 shadow-green-500 p-2 mb-2 font-bold w-full rounded flex justify-center items-center">Completed
+        <span className="shadow-md bg-blue-50 shadow-green-500 p-2 mb-2 font-bold w-full rounded flex justify-center items-center">Completed
         <span 
           className='text-sm font-light ml-1'>- {completedTasks.length} {completedTasks.length > 1 ? "Items" : "Item"}
         </span></span>

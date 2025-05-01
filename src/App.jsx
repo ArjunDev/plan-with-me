@@ -9,10 +9,10 @@ function App() {
  
   const { projectSummaryModal } = useContext(ElementsData); 
   // global context state
-  console.log(projectSummaryModal)
+  // console.log(projectSummaryModal)
 
   return (
-      <div className="flex flex-col items-center w-full bg-blue-50 ">
+      <div className="flex flex-col items-center w-full bg-gray-900 ">
         {projectSummaryModal.kanban.isOpen && <ProjectSummaryModal/>}
         <InputBar/>
         <div className="w-full overflow-x-auto">
