@@ -70,7 +70,7 @@ const InputBar = () => {
   // console.log("Task Due Date: ", taskDueDate)
   // console.log("Task Priority: ", taskPriority)
   return (
-    <div className='mt-8'>
+    <div className=''>
       <button
         className="rounded bg-blue-600 w-auto p-2 hover:bg-blue-500 font-bold hover:cursor-pointer"
         onClick={handleAddNewTaskBtn}

@@ -21,7 +21,7 @@ export const InputContext = ({ children }) => {
       isOpen: true
     }
   });
-
+                                                
   return (
     <ElementsData.Provider 
      value={{ elements, setElements, projectSummaryModal,setProjectSummaryModal}}

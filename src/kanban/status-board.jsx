@@ -3,10 +3,11 @@ import DraggableTask from './draggable-task';
 import { ElementsData } from './input-context';
 import EditTask from './edit-task-modal';
 import DeleteTask from './delete-task-modal';
+import InputBar from './input-bar';
 
 //import { FaTrash, FaPenSquare } from 'react-icons/fa';
 
-function StatusColumns() {
+function StausBoard() {
   
   const { elements, setElements } = useContext(ElementsData);// Global state item
   const [pendingTasks, setPendingTasks] = useState([]);
@@ -89,7 +90,7 @@ function StatusColumns() {
 
 
   return (
-    <div className="flex justify-between items-start sm:flex-1 gap-4 mt-8 w-full px-6">
+    <div className="flex flex-col justify-center items-center gap-4 w-[75%] rounded-2xl bg-amber-200 min-h-full flex-nowrap">
       {/* Render the EditTask modal when editing */}
       {isEditing && (
         <EditTask
@@ -106,9 +107,17 @@ function StatusColumns() {
           onNo={handleCancleDelete}
         />
       )}
+
+      {/* add-task bar */}
+      <div className='flex w-full bg-blue-400 flex-nowrap'>
+        <InputBar/>
+      </div>
+      
+      
+      <div className='flex justify-between items-start gap-4 rounded-2xl bg-amber-200'>
       {/* Pending Column */}
       <div
-        className="flex flex-col min-h-screen flex-1 border border-dashed border-cyan-500 gap-4 p-2"
+        className="flex flex-col min-h-screen flex-1 border border-dashed border-cyan-500 gap-4 p-2 rounded-2xl"
         id="pending-col"
         onDragOver={handleDragOver}
         onDrop={(e) => handleDrop(e, 'red')}
@@ -132,7 +141,7 @@ function StatusColumns() {
 
       {/* InProgress Column */}
       <div
-        className="flex flex-col min-h-screen flex-1 border border-dashed border-cyan-500 gap-4 p-2"
+        className="flex flex-col min-h-screen flex-1 border border-dashed border-cyan-500 gap-4 p-2 rounded-2xl"
         id="inprogress-col"
         onDragOver={handleDragOver}
         onDrop={(e) => handleDrop(e, 'orange')}
@@ -156,7 +165,7 @@ function StatusColumns() {
 
       {/* Completed Column */}
       <div
-        className="flex flex-col min-h-screen flex-1 border border-dashed border-cyan-500 gap-4 p-2"
+        className="flex flex-col min-h-screen flex-1 border border-dashed border-cyan-500 gap-4 p-2 rounded-2xl"
         id="completed-col"
         onDragOver={handleDragOver}
         onDrop={(e) => handleDrop(e, 'green')}
@@ -177,8 +186,9 @@ function StatusColumns() {
           />
         ))}
       </div>
+      </div>
     </div>
   );
 }
 
-export default StatusColumns;
+export default StausBoard;
