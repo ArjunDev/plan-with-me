@@ -26,19 +26,23 @@ const DraggableTask = ({ element, handleDragStart, handleDeleteTaskBtn, handleEd
       className="flex flex-col p-4 gap-2 bg-blue-100 rounded-2xl hover:cursor-grab shadow-lg"
       style={{ borderBottom: `3px solid ${element.color}` }}
     >
-      <div className="flex items-start justify-center relative">
-        <div
-          className="font-medium text-center"
-        >{element.task}</div>
+      <div className="flex justify-between items-start w-full">
+        <div className="font-medium text-left">{element.task}</div>
         <div 
-          className="p-2 h-full w-5 items-center justify-center">
+          className="p-2 h-full flex items-start justify-end">
           <div 
             onClick={() => hideTaskDetailsBtn(element.id)}
-            className="absolute right-0 top-0 cursor-pointer w-6 h-6"
-          >{ element.hideTaskDetails ? <FaAngleDown className="text-lg" /> : <FaAngleRight className="text-lg"/>}</div>
+            className="cursor-pointer w-6 h-6"
+          >
+            {element.hideTaskDetails ? (
+              <FaAngleDown className="text-lg" />
+            ) : (
+              <FaAngleRight className="text-lg" />
+            )}
+          </div>
         </div>
-        
       </div>
+
       <div 
         className={ element.hideTaskDetails ? "hidden " : "flex flex-col gap-2"}
       >

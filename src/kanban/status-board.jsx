@@ -90,7 +90,8 @@ function StausBoard() {
 
 
   return (
-    <div className="flex flex-col justify-center items-center gap-4 w-[75%] rounded-2xl bg-amber-200 min-h-full flex-nowrap">
+    <div 
+      className="flex flex-col justify-center items-center gap-4 w-[80%] rounded-2xl bg-gray-100 min-h-full flex-nowrap overflow-hidden shadow-lg">
       {/* Render the EditTask modal when editing */}
       {isEditing && (
         <EditTask
@@ -108,13 +109,15 @@ function StausBoard() {
         />
       )}
 
-      {/* add-task bar */}
-      <div className='flex w-full bg-blue-400 flex-nowrap'>
+      {/* kanban bar */}
+      <div 
+        className='flex-nowrap flex justify-between items-center w-full px-8 mt-4 rounded-2xl'>
+        <span className='font-medium'>Project name : </span>
         <InputBar/>
       </div>
       
-      
-      <div className='flex justify-between items-start gap-4 rounded-2xl bg-amber-200'>
+      <div 
+        className='flex justify-between items-start gap-4 rounded-2xl bg-gray-100'>
       {/* Pending Column */}
       <div
         className="flex flex-col min-h-screen flex-1 border border-dashed border-cyan-500 gap-4 p-2 rounded-2xl"

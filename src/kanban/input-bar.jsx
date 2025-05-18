@@ -72,7 +72,7 @@ const InputBar = () => {
   return (
     <div className=''>
       <button
-        className="rounded bg-blue-600 w-auto p-2 hover:bg-blue-500 font-bold hover:cursor-pointer"
+        className="rounded-2xl bg-blue-400 w-auto p-1.5 px-3 hover:bg-blue-500 font-medium hover:cursor-pointer shadow-lg"
         onClick={handleAddNewTaskBtn}
       >Add New Task</button>
       {isModalVisible && (
@@ -124,12 +124,12 @@ const InputBar = () => {
             <div className='flex justify-center items-center p-2 gap-6'>
               <button
                 id='save-btn'
-                className="shadow-md shadow-blue-300 rounded bg-blue-500 min-w-fit p-2 hover:bg-blue-400 font-bold"
+                className="shadow-md shadow-blue-300 rounded bg-blue-500 min-w-fit p-2 hover:bg-blue-400 font-bold cursor-pointer"
                 onClick={handleSaveBtn}
               >Save</button>
               <button
                 id='close-btn'
-                className="shadow-md shadow-blue-300 rounded bg-red-500 min-w-fit p-2 hover:bg-red-400 font-bold"
+                className="shadow-md shadow-blue-300 rounded bg-red-500 min-w-fit p-2 hover:bg-red-400 font-bold cursor-pointer"
                 onClick={handleCloseBtn}
               >Close</button>
             </div>

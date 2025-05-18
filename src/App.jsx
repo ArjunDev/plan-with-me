@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { ElementsData } from '../../planwithme/src/kanban/input-context';
-// import InputBar from '../../planwithme/src/kanban/input-bar';
 import StatusBoard from './kanban/status-board';
-import ProjectSummaryModal from '../../planwithme/src/kanban/project-summary-modal';
+// import ProjectSummaryModal from '../../planwithme/src/kanban/project-summary-modal';
 import ProjectDashBoard from './kanban/project-dashboard';
+import NavBar from './kanban/navbar';
 
 
 function App() {
@@ -12,12 +12,10 @@ function App() {
   // console.log(projectSummaryModal)
 
   return (
-      <div className="flex flex-col items-center w-full bg-gray-500 ">
+      <div className="flex flex-col items-center w-full bg-gray-300 ">
         {/* {projectSummaryModal.kanban.isOpen && <ProjectSummaryModal/>} */}
-        <div className='flex justify-center items-center bg-amber-100 w-full h-12 border rounded '>
-          Nav bar
-        </div>
-        <div className="w-full flex bg-amber-50 p-4 gap-4">
+        <NavBar/>
+        <div className="w-full flex p-4 gap-4 mt-6">
           <StatusBoard />
           <ProjectDashBoard />
         </div>
