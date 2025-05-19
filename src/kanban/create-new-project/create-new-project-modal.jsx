@@ -1,6 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { allProjectsData } from '../input-context';
 import { useNavigate } from 'react-router-dom';
+import CloseIcon from '@mui/icons-material/Close';
+
 
 const CreateNewProjectModal = ({isModalVisible, setIsModalVisible}) => {
   
@@ -60,7 +62,7 @@ const CreateNewProjectModal = ({isModalVisible, setIsModalVisible}) => {
             <button 
               className='absolute right-4 top-2 text-lg cursor-pointer p-2'
               onClick={handleCloseBtn}
-            >X</button>
+            >{<CloseIcon/>}</button>
             <span className='mt-4 font-medium'>New Project</span>
             <div className='flex flex-col gap-4 border p-3 rounded-2xl'>
             <div className='flex gap-4 mt-4 justify-center items-center'>
