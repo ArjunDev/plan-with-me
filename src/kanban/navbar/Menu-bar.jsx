@@ -30,7 +30,7 @@ const MenuBar = () => {
   return (
     <>
     <button 
-      className='cursor-pointer font-bold bg-blue-400 px-3 p-1.5 shadow-lg rounded-2xl'
+      className='cursor-pointer font-bold bg-blue-400 hover:bg-blue-500 px-3 p-1.5 shadow-lg rounded-2xl'
       onClick={handleMenuBtn}
     >Menu</button>
     

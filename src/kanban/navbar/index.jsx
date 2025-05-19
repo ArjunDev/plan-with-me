@@ -23,7 +23,8 @@ const NavBar = () => {
     <div className='flex justify-between items-center w-full h-12 rounded px-8 py-12 gap-4 bg-gray-200'>
       <div className='flex items-center gap-4'>
         <MenuBar />
-        <span className='rounded font-bold p-1.5 px-3 bg-gray-50 text-blue-600'>PlanWithMe</span>
+        <span 
+          className='ml-4 font-bold text-lg text-blue-600  underline'>PlanWithMe</span>
       </div>
       <CreateNewProject />
     </div>
