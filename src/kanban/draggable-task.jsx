@@ -31,7 +31,7 @@ const DraggableTask = ({ element, handleDragStart, handleDeleteTaskBtn, handleEd
       key={element.id}
       draggable
       onDragStart={(e) => handleDragStart(e, element)}
-      className="flex flex-col p-4 gap-2 bg-blue-100 rounded-2xl hover:cursor-grab shadow-lg"
+      className="flex flex-col p-4 gap-2 bg-gray-50 rounded-2xl hover:cursor-grab shadow-lg"
       style={{ borderBottom: `3px solid ${element.color}` }}
     >
       <div className="flex justify-between items-start w-full">

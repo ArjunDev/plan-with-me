@@ -42,21 +42,21 @@ const MenuBar = () => {
           className='relative flex flex-col p-8 gap-4 bg-gray-50 shadow-lg h-full w-full'
         >
           <button 
-            className='absolute right-4 top-2 font-medium text-2xl cursor-pointer text-red-500'
+            className='absolute right-2 top-1 text-2xl cursor-pointer p-2'
             onClick={handleCloseBtn}
           >X</button>
           <div>
-            <div className='mt-6 flex justify-between items-center'>
+            <div className='mt-8 flex justify-between items-center '>
               <span className='font-bold'>All Projects</span>
               <CreateNewProject/>
             </div>
             <div className='flex flex-col gap-2 mt-8'>
               {allProjectsList && allProjectsList.map( project => (
-                  <NavLink 
-                    key={project.projectId}
-                    className='border rounded list-none p-1 px-3 shadow-md'
-                    to={project.projectId}
-                  >{project.projectName}</NavLink>
+                <NavLink 
+                  key={project.projectId}
+                  className='rounded list-none p-2 px-3 shadow-lg bg-gray-50 border hover:border hover:border-green-500'
+                  to={project.projectId}
+                >{project.projectName}</NavLink>
               ))}
             </div>
           </div>

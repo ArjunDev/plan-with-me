@@ -1,14 +1,16 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import NavBar from './kanban/navbar';
 import KanbanBoard from './kanban-board';
 
 function App() {
+  const  defaultId = "123";
 
   return (
     <>
       <NavBar/>
       <Routes>
+        <Route path="/" element={<Navigate to={`/${defaultId}`} replace />} />
         <Route path='/:id' element={<KanbanBoard/>}/>
       </Routes>
     </>

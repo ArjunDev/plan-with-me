@@ -16,7 +16,7 @@ const CreateNewProject = () => {
     >
       <button
         onClick={handleCreateNewProjectBtn}
-        className='bg-blue-400 px-3 p-1.5 rounded-2xl font-medium shadow-lg cursor-pointer'
+        className='bg-blue-400 px-3 p-1.5 rounded-2xl font-medium shadow-lg cursor-pointer hover:bg-blue-500'
       >Create New Project</button>
       <CreateNewProjectModal 
         isModalVisible={isModalVisible} 

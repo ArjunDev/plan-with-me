@@ -110,7 +110,7 @@ function StatusBoard() {
   };
   
   return (
-    <div className="flex flex-col justify-center items-center gap-4 w-[80%] rounded-2xl bg-gray-100 min-h-full shadow-lg">
+    <div className="flex flex-col justify-center items-center gap-4 w-[80%] rounded-2xl bg-gray-50 min-h-full shadow-lg">
       {isEditing && (
         <EditTask
           task={editingTask}
@@ -151,7 +151,7 @@ function StatusBoard() {
             onDrop={(e) => handleDrop(e, color)}
           >
             <div>
-              <span className="shadow-md bg-blue-50 p-2 mb-2 font-bold rounded w-full flex justify-center items-center">
+              <span className="shadow-md bg-gray-200 p-2 mb-2 font-bold rounded w-full flex justify-center items-center">
                 {title}
                 <span className="text-sm font-light ml-1">- {tasks.length} {tasks.length > 1 ? "Items" : "Item"}</span>
               </span>

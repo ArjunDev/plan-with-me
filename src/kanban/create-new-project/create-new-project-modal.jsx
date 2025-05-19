@@ -1,10 +1,12 @@
 import React, { useContext, useState } from 'react';
 import { allProjectsData } from '../input-context';
+import { useNavigate } from 'react-router-dom';
 
 const CreateNewProjectModal = ({isModalVisible, setIsModalVisible}) => {
   
   const { allProjects, setAllProjects } = useContext(allProjectsData);
   const [projName, setProjName] = useState("")
+  const navigate = useNavigate()
 
   const handleInputEl = (e) => {
     setProjName(e.target.value)
@@ -34,9 +36,11 @@ const CreateNewProjectModal = ({isModalVisible, setIsModalVisible}) => {
     //set items to localstorage
     localStorage.setItem("allProjects", JSON.stringify(allProjectsFromLocal));
   
-    setAllProjects(allProjectsFromLocal)
+
+    setAllProjects(allProjectsFromLocal);
     setProjName("");
     setIsModalVisible(false);
+    navigate(`/${newProject.projectId}`)
   };
   
   return (
@@ -45,9 +49,11 @@ const CreateNewProjectModal = ({isModalVisible, setIsModalVisible}) => {
         <div 
           className='fixed inset-0 flex items-center justify-center z-50'
         >
+          {/* Overlay */}
         <div 
-          className='absolute inset-0 backdrop-blur-xs bg-black/25'>
-        </div> {/* Overlay */}
+          className='absolute inset-0 backdrop-blur-xs bg-black/25'
+        >
+        </div> 
           <div 
             className='relative flex flex-col w-[80%] sm:w-[50%] h-auto p-8 gap-4 bg-blue-50 shadow-lg rounded-2xl z-50'
           >
@@ -76,7 +82,6 @@ const CreateNewProjectModal = ({isModalVisible, setIsModalVisible}) => {
                 className='bg-blue-400 px-4 p-1 rounded-2xl cursor-pointer shadow-md'>Save</button>
             </div>
             </div>
-
           </div>
         </div>
       )}

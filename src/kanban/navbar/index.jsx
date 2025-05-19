@@ -20,7 +20,7 @@ const NavBar = () => {
   },[])
 
   return (
-    <div className='flex justify-between items-center w-full h-12 rounded px-8 gap-4 mt-3'>
+    <div className='flex justify-between items-center w-full h-12 rounded px-8 py-12 gap-4 bg-gray-200'>
       <div className='flex items-center gap-4'>
         <MenuBar />
         <span className='rounded font-bold p-1.5 px-3 bg-gray-50 text-blue-600'>PlanWithMe</span>
