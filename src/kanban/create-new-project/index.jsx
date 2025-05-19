@@ -12,7 +12,7 @@ const CreateNewProject = () => {
 
   return (
     <div
-      className='fixed right-6'
+      className='flex'
     >
       <button
         onClick={handleCreateNewProjectBtn}

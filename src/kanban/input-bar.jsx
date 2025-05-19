@@ -1,92 +1,66 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { ElementsData } from './input-context';
+import React, { useContext, useState } from 'react';
+import { allProjectsData } from './input-context';
 
-const InputBar = () => {
-  const { elements, setElements } = useContext(ElementsData); 
-  // global context state
+const InputBar = ({ currentProject, setCurrentProject }) => {
+  const { allProjects, setAllProjects } = useContext(allProjectsData);
+
   const [taskTitle, setTaskTitle] = useState('');
   const [taskDesc, setTaskDesc] = useState('');
   const [taskDueDate, setTaskDueDate] = useState('');
   const [taskPriority, setTaskPriority] = useState('Low');
-  const [isModalVisible, setIsModalVisible] = useState(false); 
-  // State to control modal visibility
-
-  const handleAddNewTaskBtn = () => {
-    setIsModalVisible(true); // Show the modal
-  };
-
-  // Load elements from localStorage on component mount
-  useEffect(() => {
-    const storedElements = JSON.parse(localStorage.getItem('elements'));
-    //console.log(storedElements); // Check if it's null or an empty array on refresh
-    if (storedElements && Array.isArray(storedElements)) {
-      setElements(storedElements);
-    } else {
-      // If no elements are found, set an empty array
-      setElements([]);
-    }
-  }, [setElements]);
-
-  // Save elements to localStorage whenever they change
-  useEffect(() => {
-    if (elements.length > 0) {
-      localStorage.setItem('elements', JSON.stringify(elements));
-    }
-  }, [elements]);
-
-  const handleDatePicker = (e) => {
-    setTaskDueDate(e.target.value);
-  };
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleSaveBtn = () => {
-
-    if (taskTitle === "" || taskDesc === "" || taskDueDate === "") {
+    if (!taskTitle || !taskDesc || !taskDueDate) {
       alert("Please enter all the fields!");
-      return
+      return;
     }
 
-    setElements((prevElements) => [
-      ...prevElements,
-      {
-        // to generate uniqe number ex: 1746121300490
-        id: Date.now(),
-        task: taskTitle,
-        color: 'red',
-        desc: taskDesc,
-        priority: taskPriority,
-        dueDate: taskDueDate,
-        hideTaskDetails: false,
-      }]);
+    const newTask = {
+      id: Date.now(),
+      task: taskTitle,
+      color: 'red',
+      desc: taskDesc,
+      priority: taskPriority,
+      dueDate: taskDueDate,
+      hideTaskDetails: false,
+    };
+
+    const updatedProject = {
+      ...currentProject,
+      elements: [...currentProject.elements, newTask],
+    };
+
+    const updatedAllProjects = {
+      ...allProjects,
+      [updatedProject.projectId]: updatedProject,
+    };
+
+    setCurrentProject(updatedProject);
+    setAllProjects(updatedAllProjects);
+    localStorage.setItem('allProjects', JSON.stringify(updatedAllProjects));
+
     setTaskTitle('');
     setTaskDesc('');
+    setTaskDueDate('');
     setTaskPriority('Low');
-    setIsModalVisible(false); // Hide the modal after saving
+    setIsModalVisible(false);
   };
 
-  const handleCloseBtn = () => {
-    setIsModalVisible(false); // Hide the modal
-  };
-
-  // console.log("Task Due Date: ", taskDueDate)
-  // console.log("Task Priority: ", taskPriority)
   return (
-    <div className=''>
+    <div>
       <button
-        className="rounded-2xl bg-blue-400 w-auto p-1.5 px-3 hover:bg-blue-500 font-medium hover:cursor-pointer shadow-lg"
-        onClick={handleAddNewTaskBtn}
-      >Add New Task</button>
+        className="rounded-2xl bg-blue-400 w-auto p-1.5 px-3 hover:bg-blue-500 font-medium shadow-lg"
+        onClick={() => setIsModalVisible(true)}
+      >
+        Add New Task
+      </button>
+
       {isModalVisible && (
-        <div 
-          className='fixed inset-0 flex items-center justify-center z-50'
-        >
-        <div 
-          className='absolute inset-0 backdrop-blur-sm bg-black/25'>
-        </div> {/* Overlay */}
-          <div 
-            className='relative flex flex-col w-[85%] h-auto sm:w-[50%] sm:h-auto sm:gap-8 p-8 gap-4 bg-blue-50 shadow-lg shadow-blue-500 rounded-2xl z-50'
-          >
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="absolute inset-0 backdrop-blur-sm bg-black/25" />
+          <div className="relative flex flex-col w-[85%] sm:w-[50%] gap-4 bg-blue-50 shadow-lg p-8 rounded-2xl z-50">
             <input
-              id='task-title'
               className="border shadow-md rounded p-2"
               type="text"
               placeholder="Title of the task"
@@ -94,44 +68,45 @@ const InputBar = () => {
               onChange={(e) => setTaskTitle(e.target.value)}
             />
             <textarea
-              id='task-desc'
               className="border shadow-md rounded p-2 min-h-40"
               placeholder="Description"
               value={taskDesc}
               onChange={(e) => setTaskDesc(e.target.value)}
             />
             <div>
-              <label htmlFor="task-priority">Priority:</label>
+              <label>Priority:</label>
               <select
-                name="task-priority"
-                id="task-priority"
+                className="border rounded ml-2 cursor-pointer px-2"
                 value={taskPriority}
                 onChange={(e) => setTaskPriority(e.target.value)}
-                className='border rounded ml-2 cursor-pointer px-2'
               >
                 <option value="Low">Low</option>
                 <option value="Medium">Medium</option>
                 <option value="High">High</option>
               </select>
             </div>
-            <label>Due Date: <input 
-              type="date"
-              value={taskDueDate}
-              onChange={handleDatePicker}
-              className="border p-1 rounded mb-4 cursor-pointer"
+            <label>
+              Due Date:
+              <input
+                type="date"
+                className="border p-1 rounded mb-4 cursor-pointer ml-2"
+                value={taskDueDate}
+                onChange={(e) => setTaskDueDate(e.target.value)}
               />
             </label>
-            <div className='flex justify-center items-center p-2 gap-6'>
+            <div className="flex justify-center gap-6">
               <button
-                id='save-btn'
-                className="shadow-md shadow-blue-300 rounded bg-blue-500 min-w-fit p-2 hover:bg-blue-400 font-bold cursor-pointer"
+                className="bg-blue-500 p-2 rounded font-bold text-white hover:bg-blue-400"
                 onClick={handleSaveBtn}
-              >Save</button>
+              >
+                Save
+              </button>
               <button
-                id='close-btn'
-                className="shadow-md shadow-blue-300 rounded bg-red-500 min-w-fit p-2 hover:bg-red-400 font-bold cursor-pointer"
-                onClick={handleCloseBtn}
-              >Close</button>
+                className="bg-red-500 p-2 rounded font-bold text-white hover:bg-red-400"
+                onClick={() => setIsModalVisible(false)}
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>

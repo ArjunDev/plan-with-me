@@ -1,11 +1,11 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 
 // Create context
-export const ElementsData = createContext();
+export const allProjectsData = createContext();
 
 export const InputContext = ({ children }) => {
  
-  const [elements, setElements] = useState([]);
+  const [allProjects, setAllProjects] = useState({});
   //Global state to manage tasks  
   const [projectSummaryModal, setProjectSummaryModal] = useState({
     kanban: {
@@ -20,12 +20,13 @@ export const InputContext = ({ children }) => {
       ],
       isOpen: true
     }
-  });
-                                                
+  });        
+  // console.log(allProjects)
+
   return (
-    <ElementsData.Provider 
-     value={{ elements, setElements, projectSummaryModal,setProjectSummaryModal}}
+    <allProjectsData.Provider 
+     value={{ allProjects, setAllProjects, projectSummaryModal,setProjectSummaryModal}}
     >{children}
-    </ElementsData.Provider>
+    </allProjectsData.Provider>
   );
 };

@@ -1,23 +1,31 @@
 import React, { useContext } from "react";
-import { ElementsData } from './input-context';
-import { FaAngleRight, FaAngleDown } from "react-icons/fa"; // ✅ Correct way for react-icons
+import { allProjectsData } from './input-context';
+import { FaAngleRight, FaAngleDown } from "react-icons/fa"; 
 
-
-
-const DraggableTask = ({ element, handleDragStart, handleDeleteTaskBtn, handleEditTaskBtn }) => {
+const DraggableTask = ({ element, handleDragStart, handleDeleteTaskBtn, handleEditTaskBtn, currentProjectId }) => {
 
     // Global state item
-    const { elements, setElements } = useContext(ElementsData);
+    const { allProjects, setAllProjects } = useContext(allProjectsData);
     
-    const hideTaskDetailsBtn = (taskId) =>{
-
-      const updatedElements = elements.map((el) => (el.id === taskId) ? {...el, hideTaskDetails: !el.hideTaskDetails} : el); 
-      // console.log(updatedElements)
-      setElements(updatedElements); // Update state
-      localStorage.setItem("elements", JSON.stringify(updatedElements));
-      // Update localStorage
-  }
-  
+    const hideTaskDetailsBtn = (taskId) => {
+      const updatedProjects = { ...allProjects };
+      const currentProject = updatedProjects[currentProjectId];
+    
+      if (!currentProject) return; // Safety check
+    
+      const updatedElements = currentProject.elements.map((task) =>
+        task.id === taskId ? { ...task, hideTaskDetails: !task.hideTaskDetails } : task
+      );
+    
+      updatedProjects[currentProjectId] = {
+        ...currentProject,
+        elements: updatedElements,
+      };
+    
+      setAllProjects(updatedProjects);
+      localStorage.setItem("allProjects", JSON.stringify(updatedProjects));
+    };
+    
   return (
     <div
       key={element.id}

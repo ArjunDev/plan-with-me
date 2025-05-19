@@ -1,9 +1,14 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react';
+import CreateNewProject from '../create-new-project';
+import { allProjectsData } from '../input-context';
+import { NavLink } from 'react-router-dom';
 
 const MenuBar = () => {
 
+  const { allProjects, setAllProjects } = useContext(allProjectsData);
   const [isModalVisible, setIsModalVisible] = useState(false); 
   // State to control modal visibility
+  const [allProjectsList, setAllProjectsList] = useState({})
 
 
   const handleMenuBtn = () =>{
@@ -12,6 +17,15 @@ const MenuBar = () => {
   const handleCloseBtn = () =>{
     setIsModalVisible(false);
   }
+
+  useEffect(()=>{
+    //getting obl from localStorage
+    const allProjectsFromLocal = JSON.parse(localStorage.getItem("allProjects")) || {};
+    // converting obj to array
+    const arrOfAllProj = Object.values(allProjectsFromLocal);
+    setAllProjectsList(arrOfAllProj);
+    // console.log(arrOfAllProj)
+  },[allProjects])
 
   return (
     <>
@@ -31,6 +45,21 @@ const MenuBar = () => {
             className='absolute right-4 top-2 font-medium text-2xl cursor-pointer text-red-500'
             onClick={handleCloseBtn}
           >X</button>
+          <div>
+            <div className='mt-6 flex justify-between items-center'>
+              <span className='font-bold'>All Projects</span>
+              <CreateNewProject/>
+            </div>
+            <div className='flex flex-col gap-2 mt-8'>
+              {allProjectsList && allProjectsList.map( project => (
+                  <NavLink 
+                    key={project.projectId}
+                    className='border rounded list-none p-1 px-3 shadow-md'
+                    to={project.projectId}
+                  >{project.projectName}</NavLink>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     )}

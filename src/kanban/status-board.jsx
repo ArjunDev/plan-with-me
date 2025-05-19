@@ -1,197 +1,179 @@
 import React, { useContext, useEffect, useState } from 'react';
 import DraggableTask from './draggable-task';
-import { ElementsData } from './input-context';
+import { allProjectsData } from './input-context';
 import EditTask from './edit-task-modal';
 import DeleteTask from './delete-task-modal';
 import InputBar from './input-bar';
+import { useParams } from 'react-router-dom';
 
-//import { FaTrash, FaPenSquare } from 'react-icons/fa';
-
-function StausBoard() {
-  
-  const { elements, setElements } = useContext(ElementsData);// Global state item
+function StatusBoard() {
+  const { allProjects, setAllProjects } = useContext(allProjectsData);
   const [pendingTasks, setPendingTasks] = useState([]);
   const [inProgressTasks, setInProgressTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
-  const [isDeleting, setIsDeleting] = useState(false); // Control delete mode
-  const [deletingTask, setDeletingTask] = useState(null); // Store task 
-  const [isEditing, setIsEditing] = useState(false); // Control edit mode
-  const [editingTask, setEditingTask] = useState(null); // Store task being edited
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deletingTask, setDeletingTask] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingTask, setEditingTask] = useState(null);
+  const [currentProject, setCurrentProject] = useState(null);
+  const { id: currentProjectId } = useParams();
 
-
-  // Distribute elements into respective columns based on color and sorting based on priority 
   useEffect(() => {
-    const priorityOrder = { High: 1, Medium: 2, Low: 3 };
-  
-    const sortByPriority = (tasks) => 
-      [...tasks].sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
-  
-    setPendingTasks(sortByPriority(elements.filter((el) => el.color.toLowerCase() === 'red')));
-    setInProgressTasks(sortByPriority(elements.filter((el) => el.color.toLowerCase() === 'orange')));
-    setCompletedTasks(sortByPriority(elements.filter((el) => el.color.toLowerCase() === 'green')));
-  }, [elements]);
+    const allProjectsFromLocal = JSON.parse(localStorage.getItem("allProjects")) || {};
+    setAllProjects(allProjectsFromLocal);
+  }, [currentProjectId]);
+
+  useEffect(() => {
+    if (allProjects && allProjects[currentProjectId]) {
+      const currProj = allProjects[currentProjectId];
+      setCurrentProject(currProj);
+
+      const tasks = currProj.elements;
+      const priorityOrder = { High: 1, Medium: 2, Low: 3 };
+
+      const sortByPriority = (tasks) =>
+        [...tasks].sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+
+      setPendingTasks(sortByPriority(tasks.filter(el => el.color === 'red')));
+      setInProgressTasks(sortByPriority(tasks.filter(el => el.color === 'orange')));
+      setCompletedTasks(sortByPriority(tasks.filter(el => el.color === 'green')));
+    }
+  }, [allProjects, currentProjectId]);
 
   const handleDragStart = (e, element) => {
     e.dataTransfer.setData('text/plain', JSON.stringify(element));
-    //console.log(element)
   };
 
   const handleDrop = (e, newColor) => {
     e.preventDefault();
     const draggedElement = JSON.parse(e.dataTransfer.getData('text/plain'));
-    //console.log(draggedElement)
-    setElements((prevElements) =>
-      prevElements.map((el) =>
-        el.id === draggedElement.id ? { ...el, color: newColor } : el
-      )
-    );
-  };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
+    const updatedElements = currentProject.elements.map((task) =>
+      task.id === draggedElement.id ? { ...task, color: newColor } : task
+    );
+
+    const updatedProject = { ...currentProject, elements: updatedElements };
+    const updatedAllProjects = {
+      ...allProjects,
+      [updatedProject.projectId]: updatedProject
+    };
+
+    setCurrentProject(updatedProject);
+    setAllProjects(updatedAllProjects);
+    localStorage.setItem('allProjects', JSON.stringify(updatedAllProjects));
   };
 
   const handleEditTaskBtn = (task) => {
-    //console.log(task)
     setEditingTask(task);
     setIsEditing(true);
   };
 
   const handleSaveTask = (updatedTask) => {
-    setElements((prevElements) =>
-      prevElements.map((el) => (el.id === updatedTask.id ? updatedTask : el))
+    const updatedElements = currentProject.elements.map((task) =>
+      task.id === updatedTask.id ? updatedTask : task
     );
+  
+    const updatedProject = { ...currentProject, elements: updatedElements };
+    const updatedAllProjects = {
+      ...allProjects,
+      [currentProjectId]: updatedProject  // ✅ use currentProjectId here
+    };
+  
+    setCurrentProject(updatedProject);
+    setAllProjects(updatedAllProjects);
+    localStorage.setItem('allProjects', JSON.stringify(updatedAllProjects));
+  
     setIsEditing(false);
     setEditingTask(null);
   };
-
-  const handleCloseEdit = () => {
-    setIsEditing(false);
-    setEditingTask(null);
-  };
-
+  
   const handleDeleteTaskBtn = (taskId) => {
-    setDeletingTask(taskId);  // Set the task ID to be deleted
-    setIsDeleting(true);      // Show the Delete modal
+    setDeletingTask(taskId);
+    setIsDeleting(true);
   };
-  
+
   const handlePreceedDelete = (taskId) => {
-    const updatedElements = elements.filter((el) => el.id !== taskId); // Filter out the task by ID
-    setElements(updatedElements); // Update state
-    localStorage.setItem("elements", JSON.stringify(updatedElements));
-    // Update localStorage
-    setIsDeleting(false); // Close the modal after deletion
+    const updatedElements = currentProject.elements.filter((el) => el.id !== taskId);
+  
+    const updatedProject = { ...currentProject, elements: updatedElements };
+    const updatedAllProjects = {
+      ...allProjects,
+      [currentProjectId]: updatedProject  //use currentProjectId here
+    };
+  
+    setCurrentProject(updatedProject);
+    setAllProjects(updatedAllProjects);
+    localStorage.setItem('allProjects', JSON.stringify(updatedAllProjects));
+  
+    setIsDeleting(false);
+    setDeletingTask(null);
   };
   
-  const handleCancleDelete = () => {
-    setIsDeleting(false); // Close the modal without doing anything
-    setDeletingTask(null); // Clear the task ID
-  };
-
-
   return (
-    <div 
-      className="flex flex-col justify-center items-center gap-4 w-[80%] rounded-2xl bg-gray-100 min-h-full flex-nowrap overflow-hidden shadow-lg">
-      {/* Render the EditTask modal when editing */}
+    <div className="flex flex-col justify-center items-center gap-4 w-[80%] rounded-2xl bg-gray-100 min-h-full shadow-lg">
       {isEditing && (
         <EditTask
           task={editingTask}
           onSave={handleSaveTask}
-          onClose={handleCloseEdit}
+          onClose={() => setIsEditing(false)}
         />
       )}
-      {/* Render the DeleteTask modal when deleting */}
       {isDeleting && (
         <DeleteTask
           taskId={deletingTask}
           onYes={handlePreceedDelete}
-          onNo={handleCancleDelete}
+          onNo={() => setIsDeleting(false)}
         />
       )}
 
-      {/* kanban bar */}
-      <div 
-        className='flex-nowrap flex justify-between items-center w-full px-8 mt-4 rounded-2xl'>
-        <span className='font-medium'>Project name : </span>
-        <InputBar/>
-      </div>
-      
-      <div 
-        className='flex justify-between items-start gap-4 rounded-2xl bg-gray-100'>
-      {/* Pending Column */}
-      <div
-        className="flex flex-col min-h-screen flex-1 border border-dashed border-cyan-500 gap-4 p-2 rounded-2xl"
-        id="pending-col"
-        onDragOver={handleDragOver}
-        onDrop={(e) => handleDrop(e, 'red')}
-      >
-        <div>
-        <span className="shadow-md bg-blue-50 shadow-red-400 p-2 mb-2 font-bold rounded w-full flex justify-center items-center">Pending
-        <span 
-          className='text-sm font-light ml-1'>- {pendingTasks.length} {pendingTasks.length > 1 ? "Items" : "Item"}
-        </span></span>
-        </div>
-        {pendingTasks.map((element) => (
-          <DraggableTask
-            key={element.id}
-            element={element}
-            handleDragStart={handleDragStart}
-            handleDeleteTaskBtn={handleDeleteTaskBtn}
-            handleEditTaskBtn={handleEditTaskBtn}
-          />
-        ))}
+      {/* kanabn board header */}
+      <div className="flex justify-between items-center w-full px-8 mt-4">
+        <span className="font-medium">
+          Project name : {currentProject?.projectName || 'Loading...'}
+        </span>
+        <InputBar 
+          currentProject={currentProject} 
+          setCurrentProject={setCurrentProject} 
+        />
       </div>
 
-      {/* InProgress Column */}
-      <div
-        className="flex flex-col min-h-screen flex-1 border border-dashed border-cyan-500 gap-4 p-2 rounded-2xl"
-        id="inprogress-col"
-        onDragOver={handleDragOver}
-        onDrop={(e) => handleDrop(e, 'orange')}
-      >
-        <div>
-        <span className="shadow-md bg-blue-50 shadow-yellow-500 p-2 mb-2 font-bold w-full rounded flex justify-center items-center">InProgress
-        <span 
-          className='text-sm font-light ml-1'>- {inProgressTasks.length} {inProgressTasks.length > 1 ? "Items" : "Item"}
-        </span></span>
-        </div>
-        {inProgressTasks.map((element) => (
-          <DraggableTask
-            key={element.id}
-            element={element}
-            handleDragStart={handleDragStart}
-            handleDeleteTaskBtn={handleDeleteTaskBtn}
-            handleEditTaskBtn={handleEditTaskBtn}
-          />
+      <div 
+        className="flex justify-between items-start gap-4 bg-gray-100 w-[95%]">
+        {[
+          { title: 'Pending', tasks: pendingTasks, color: 'red' },
+          { title: 'InProgress', tasks: inProgressTasks, color: 'orange' },
+          { title: 'Completed', tasks: completedTasks, color: 'green' },
+        ].map(({ title, tasks, color }) => (
+          <div
+            key={color}
+            className="flex flex-col min-h-screen flex-1 border border-dashed border-cyan-500 gap-4 p-2 rounded-2xl"
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => handleDrop(e, color)}
+          >
+            <div>
+              <span className="shadow-md bg-blue-50 p-2 mb-2 font-bold rounded w-full flex justify-center items-center">
+                {title}
+                <span className="text-sm font-light ml-1">- {tasks.length} {tasks.length > 1 ? "Items" : "Item"}</span>
+              </span>
+            </div>
+            {tasks.map((element) => (
+              <DraggableTask
+                key={element.id}
+                element={element}
+                handleDragStart={handleDragStart}
+                handleDeleteTaskBtn={handleDeleteTaskBtn}
+                handleEditTaskBtn={handleEditTaskBtn}
+                currentProjectId={currentProjectId}
+              />
+            ))}
+            {tasks.length === 0 && (
+              <div className="text-center text-gray-400 italic">No {title.toLowerCase()} tasks</div>
+            )}
+          </div>
         ))}
-      </div>
-
-      {/* Completed Column */}
-      <div
-        className="flex flex-col min-h-screen flex-1 border border-dashed border-cyan-500 gap-4 p-2 rounded-2xl"
-        id="completed-col"
-        onDragOver={handleDragOver}
-        onDrop={(e) => handleDrop(e, 'green')}
-      >
-        <div>
-        <span className="shadow-md bg-blue-50 shadow-green-500 p-2 mb-2 font-bold w-full rounded flex justify-center items-center">Completed
-        <span 
-          className='text-sm font-light ml-1'>- {completedTasks.length} {completedTasks.length > 1 ? "Items" : "Item"}
-        </span></span>
-        </div>
-        {completedTasks.map((element) => (
-          <DraggableTask
-            key={element.id}
-            element={element}
-            handleDragStart={handleDragStart}
-            handleDeleteTaskBtn={handleDeleteTaskBtn}
-            handleEditTaskBtn={handleEditTaskBtn}
-          />
-        ))}
-      </div>
       </div>
     </div>
   );
 }
 
-export default StausBoard;
+export default StatusBoard;
