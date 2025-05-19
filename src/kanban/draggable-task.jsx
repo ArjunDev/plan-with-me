@@ -1,6 +1,9 @@
 import React, { useContext } from "react";
 import { allProjectsData } from './input-context';
-import { FaAngleRight, FaAngleDown } from "react-icons/fa"; 
+import DeleteIcon from '@mui/icons-material/Delete';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import EditIcon from '@mui/icons-material/Edit';
 
 const DraggableTask = ({ element, handleDragStart, handleDeleteTaskBtn, handleEditTaskBtn, currentProjectId }) => {
 
@@ -37,15 +40,15 @@ const DraggableTask = ({ element, handleDragStart, handleDeleteTaskBtn, handleEd
       <div className="flex justify-between items-start w-full">
         <div className="font-medium text-left">{element.task}</div>
         <div 
-          className="p-2 h-full flex items-start justify-end">
+          className="h-full flex items-start justify-end">
           <div 
             onClick={() => hideTaskDetailsBtn(element.id)}
             className="cursor-pointer w-6 h-6"
           >
             {element.hideTaskDetails ? (
-              <FaAngleDown className="text-lg" />
+              <KeyboardArrowRightIcon className="text-lg" />
             ) : (
-              <FaAngleRight className="text-lg" />
+              <KeyboardArrowDownIcon className="text-lg font-bold" />
             )}
           </div>
         </div>
@@ -71,14 +74,14 @@ const DraggableTask = ({ element, handleDragStart, handleDeleteTaskBtn, handleEd
       <div className="flex gap-2 justify-center items-center mt-1">
         <button
           id={element.id}
-          className="shadow-md shadow-red-300 rounded-2xl bg-red-500 w-auto p-1 px-4 hover:bg-red-400 font-medium hover:cursor-pointer"
+          className="text-red-500 w-auto p-1 px-2 hover:text-black font-medium hover:cursor-pointer rounded shadow"
           onClick={() => handleDeleteTaskBtn(element.id)}
-        >Delete</button>
+        >{<DeleteIcon/>}</button>
         <button
           id={element.id}
-          className="shadow-md shadow-blue-300 rounded-2xl bg-blue-500 w-auto p-1 px-6 hover:bg-blue-400 font-medium hover:cursor-pointer"
+          className="text-blue-500 w-auto p-1 px-2 hover:text-black font-medium hover:cursor-pointer rounded shadow"
           onClick={() => handleEditTaskBtn(element)}
-        >Edit</button>
+        >{<EditIcon/>}</button>
       </div>
       </div>
     </div>
