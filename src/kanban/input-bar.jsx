@@ -96,13 +96,13 @@ const InputBar = ({ currentProject, setCurrentProject }) => {
             </label>
             <div className="flex justify-center gap-6">
               <button
-                className="bg-blue-500 p-2 rounded font-bold text-white hover:bg-blue-400"
+                className="bg-blue-500 p-2 rounded font-bold text-white hover:bg-blue-400 cursor-pointer"
                 onClick={handleSaveBtn}
               >
                 Save
               </button>
               <button
-                className="bg-red-500 p-2 rounded font-bold text-white hover:bg-red-400"
+                className="bg-red-500 p-2 rounded font-bold text-white hover:bg-red-400 cursor-pointer"
                 onClick={() => setIsModalVisible(false)}
               >
                 Close

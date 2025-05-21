@@ -98,7 +98,7 @@ const MenuBar = () => {
 
       {showConfirmModal && (
         <div className="fixed inset-0  bg-white/10 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl shadow-xl w-[400px] text-center">
+          <div className="bg-blue-100 p-6 rounded-xl shadow-xl w-[400px] text-center">
             <p className="text-lg font-semibold mb-4">Are you sure want to delete this project?</p>
             <div className="flex justify-center gap-4">
               <button

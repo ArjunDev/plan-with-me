@@ -18,7 +18,10 @@ function StatusBoard() {
   const [currentProject, setCurrentProject] = useState(null);
   const { id: currentProjectId } = useParams();
 
+  //To get local items when url params changes
   useEffect(() => {
+
+    // console.log(currentProjectId)
     const allProjectsFromLocal = JSON.parse(localStorage.getItem("allProjects")) || {};
     setAllProjects(allProjectsFromLocal);
   }, [currentProjectId]);
@@ -109,6 +112,7 @@ function StatusBoard() {
     setDeletingTask(null);
   };
   
+  // console.log(currentProject)
   return (
     <div className="flex flex-col justify-center items-center gap-4 w-[80%] rounded-2xl bg-gray-50 min-h-full shadow-lg">
       {isEditing && (
@@ -127,14 +131,18 @@ function StatusBoard() {
       )}
 
       {/* kanabn board header */}
-      <div className="flex justify-between items-center w-full px-8 mt-4">
-        <span className="font-medium">
-          Project name : {currentProject?.projectName || 'Loading...'}
-        </span>
+      <div className="flex justify-between items-center w-full px-8 mt-4 p-2">
+        {currentProject?.projectName ? <span className="font-medium flex justify-center items-center">
+          {currentProject?.projectName || 'Loading...'}
+        </span> : "You haven't created a project yet!"}
+
+        {/* show add-task-btn only if there is a project exist */}
+        {currentProject?.projectName &&
         <InputBar 
           currentProject={currentProject} 
           setCurrentProject={setCurrentProject} 
         />
+        }
       </div>
 
       <div 

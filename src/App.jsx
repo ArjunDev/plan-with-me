@@ -4,7 +4,7 @@ import NavBar from './kanban/navbar';
 import KanbanBoard from './kanban-board';
 
 function App() {
-  const  defaultId = "123";
+  const  defaultId = "0";
 
   return (
     <>
