@@ -29,6 +29,8 @@ function StatusBoard() {
   useEffect(() => {
 
     if (allProjects) {
+
+      //to add empty obj when projectid doesn't exist
       const currProj = allProjects[currentProjectId] || {};
 
       const tasks = currProj.elements || [];
@@ -55,6 +57,7 @@ function StatusBoard() {
 
   const handleDrop = (e, newColor) => {
     e.preventDefault();
+
     const draggedElement = JSON.parse(e.dataTransfer.getData('text/plain'));
 
     const updatedElements = currentProject.elements.map((task) =>

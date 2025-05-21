@@ -6,13 +6,16 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditProjectNameModal from './edit-project-name-modal';
 
 const MenuBar = () => {
   const { allProjects, setAllProjects } = useContext(allProjectsData);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [allProjectsList, setAllProjectsList] = useState([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
+  const [projectIdToEdit, setProjectIdToEdit] = useState(null);
 
   useEffect(() => {
     const allProjectsFromLocal = JSON.parse(localStorage.getItem("allProjects")) || {};
@@ -45,7 +48,8 @@ const MenuBar = () => {
   };
 
   const handleEditProjectBtn = (projectId) => {
-    // Placeholder
+    setProjectIdToEdit(projectId);
+    setIsEditModalVisible(true);
   };
 
   return (
@@ -57,16 +61,16 @@ const MenuBar = () => {
       </button>
 
       {isModalVisible && (
-        <div className='fixed top-0 left-0 flex items-center justify-center z-50 h-full w-[30%]'>
-          <div className='relative flex flex-col p-8 gap-4 bg-gray-50 shadow-lg h-full w-full'>
+        <div className='fixed top-0 left-0 flex items-center justify-center z-50 h-full w-[75%] sm:w-[30%]'>
+          <div className='relative flex flex-col gap-4 bg-gray-50 shadow-lg h-full w-full'>
             <button 
               className='absolute right-2 top-1 font-bold text-2xl cursor-pointer p-2'
               onClick={handleCloseBtn}
             >
               <CloseIcon className='hover:text-red-500'/>
             </button>
-            <div>
-              <div className='mt-8 flex justify-between items-center'>
+            <div className='mt-8 p-8'>
+              <div className=' flex justify-between items-center'>
                 <span className='font-bold'>All Projects</span>
                 <CreateNewProject />
               </div>
@@ -122,6 +126,14 @@ const MenuBar = () => {
           </div>
         </div>
       )}
+
+      {/* Edit modal  */}
+      {isEditModalVisible && 
+      <EditProjectNameModal 
+        isEditModalVisible={isEditModalVisible}
+        setIsEditModalVisible={setIsEditModalVisible}
+        projectIdToEdit={projectIdToEdit} />
+      }
     </>
   );
 };
