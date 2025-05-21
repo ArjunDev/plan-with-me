@@ -36,10 +36,11 @@ const ProjectDashBoard = () => {
 
   return (
     <div 
-      className='flex flex-col justify-start items-center bg-gray-50 shadow-lg h-max w-[20%] rounded-2xl gap-6 p-4'>
+      className='flex flex-col justify-start items-center bg-gray-50 shadow-lg h-max w-[20%] rounded-2xl gap-6 p-4 min-w-[250px] '>
       <div 
         className='mt-2 bg-gray-200 w-full flex justify-center items-center rounded-lg'>
-         <span className='font-medium p-2'>{currentProject?.projectName}</span>
+          {currentProject?.projectName ? <span className='font-medium p-2'>{currentProject?.projectName}</span> : <span className='font-medium p-2'>You haven't created a project yet!</span>
+          }
       </div>
 
       {/* circular percentage progress bar */}

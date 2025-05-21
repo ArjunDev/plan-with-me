@@ -10,9 +10,9 @@ function KanbanBoard() {
   // console.log(projectSummaryModal)
 
   return (
-      <div className="flex flex-col items-center w-full bg-gray-200">
+      <div className="flex flex-col items-center w-full bg-gray-200 overflow-x-scroll">
         {/* {projectSummaryModal.kanban.isOpen && <ProjectSummaryModal/>} */}
-        <div className="w-full flex p-4 gap-4">
+        <div className="w-full flex p-4 gap-4 ">
           <StatusBoard />
           <ProjectDashBoard />
         </div>

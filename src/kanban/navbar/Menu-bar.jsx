@@ -35,8 +35,11 @@ const MenuBar = () => {
 
   const handleConfirmDelete = (projectId) => {
     const allProjectsFromLocal = JSON.parse(localStorage.getItem("allProjects")) || {};
+
     delete allProjectsFromLocal[projectId];
+
     localStorage.setItem("allProjects", JSON.stringify(allProjectsFromLocal));
+    
     setAllProjects(allProjectsFromLocal);
     setProjectToDelete(null);
   };
@@ -50,8 +53,7 @@ const MenuBar = () => {
       <button 
         className='cursor-pointer font-bold text-lg text-blue-600 hover:text-blue-500 p-1 px-2 shadow rounded-lg'
         onClick={handleMenuBtn}
-      >
-        <MenuIcon />
+      ><MenuIcon />
       </button>
 
       {isModalVisible && (
@@ -96,6 +98,7 @@ const MenuBar = () => {
         </div>
       )}
 
+      {/* Delete project confirmation modal */}
       {showConfirmModal && (
         <div className="fixed inset-0  bg-white/10 flex items-center justify-center z-50">
           <div className="bg-blue-100 p-6 rounded-xl shadow-xl w-[400px] text-center">
