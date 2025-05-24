@@ -42,7 +42,7 @@ const CreateNewProjectModal = ({isModalVisible, setIsModalVisible}) => {
     setAllProjects(allProjectsFromLocal);
     setProjName("");
     setIsModalVisible(false);
-    navigate(`/${newProject.projectId}`)
+    navigate(`/project/${newProject.projectId}`)
   };
   
   return (

@@ -10,8 +10,10 @@ function App() {
     <>
       <NavBar/>
       <Routes>
-        <Route path="/" element={<Navigate to={`/${defaultId}`} replace />} />
-        <Route path='/:id' element={<KanbanBoard/>}/>
+        <Route path='/project/:id' element={<KanbanBoard/>}/>
+
+        {/* Catch-all routes other than defined one */}
+        <Route path="*" element={<Navigate to={`/project/${defaultId}`} replace />} />
       </Routes>
     </>
     

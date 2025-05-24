@@ -71,7 +71,7 @@ const MenuBar = () => {
               onClick={handleCloseBtn}
             ><CloseIcon className='hover:text-red-500'/>
             </button>
-            <div className='mt-8 p-8'>
+            <div className='relative mt-8 p-8 overflow-hidden'>
               <div className=' flex justify-between items-center'>
                 <span className='font-bold'>All Projects</span>
                 <CreateNewProject />
@@ -87,7 +87,7 @@ const MenuBar = () => {
                   >
                     <NavLink 
                       className='rounded list-none p-2 px-3 text-sm flex justify-between flex-1'
-                      to={project.projectId}
+                      to={`/project/${project.projectId}`}
                     >
                       {project.projectName}
                     </NavLink>

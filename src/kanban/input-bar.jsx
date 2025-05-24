@@ -50,11 +50,9 @@ const InputBar = ({ currentProject, setCurrentProject }) => {
   return (
     <div>
       <button
-        className="rounded-2xl bg-blue-400 w-auto p-1.5 px-3 hover:bg-blue-500 font-medium shadow-lg"
+        className="rounded-2xl bg-blue-400 w-auto p-1.5 px-3 hover:bg-blue-500 font-medium shadow-lg cursor-pointer"
         onClick={() => setIsModalVisible(true)}
-      >
-        Add New Task
-      </button>
+      >Add New Task</button>
 
       {isModalVisible && (
         <div className="fixed inset-0 flex items-center justify-center z-50">

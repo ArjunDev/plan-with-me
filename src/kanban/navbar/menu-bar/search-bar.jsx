@@ -25,20 +25,20 @@ const SearchBar = ({allProjectNames = []}) => {
       />
       {searchItem.trim() !== "" ? (
         searchedData.length > 0 ? (
-          <ul className='px-2'>
+          <ul className='absolute shadow-md rounded-2xl mt-1 p-2 px-4 z-30 bg-gray-200 w-[87%]'>
             {searchedData.map((item, i) => (
               <NavLink
-                to={item.projectId}
+                to={`/project/${item.projectId}`}
                 key={item.projectId}
               >
                 <li 
                   key={item.projectId}
-                  className="hover:text-blue-600 w-max"
+                  className="hover:text-blue-600 w-max mb-0.5"
                 >{item.projectName}</li>
               </NavLink>
             ))}
           </ul>
-        ) : (<p>No data found!</p>)
+        ) : (<p className='absolute shadow-md rounded-2xl mt-2 p-2 px-4 z-30 bg-gray-200 w-[87%]'>No data found!</p>)
       ) : null}
     </div>
   )
