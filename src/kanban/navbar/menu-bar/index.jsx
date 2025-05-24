@@ -1,18 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react';
-import CreateNewProject from '../create-new-project';
-import { allProjectsData } from '../input-context';
-import { NavLink } from 'react-router-dom';
+import CreateNewProject from '../../create-new-project';
+import { allProjectsData } from '../../input-context';
+import { NavLink} from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditProjectNameModal from './edit-project-name-modal';
+import EditProjectNameModal from '../edit-project-name-modal';
+import SearchBar from './search-bar';
+
 
 const MenuBar = () => {
+
   const { allProjects, setAllProjects } = useContext(allProjectsData);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [allProjectsList, setAllProjectsList] = useState([]);
+  const [allProjectNames, setallProjectNames] = useState([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
   const [projectIdToEdit, setProjectIdToEdit] = useState(null);
@@ -20,7 +23,7 @@ const MenuBar = () => {
   useEffect(() => {
     const allProjectsFromLocal = JSON.parse(localStorage.getItem("allProjects")) || {};
     const arrOfAllProj = Object.values(allProjectsFromLocal);
-    setAllProjectsList(arrOfAllProj);
+    setallProjectNames(arrOfAllProj);
   }, [allProjects]);
 
   const handleMenuBtn = () => {
@@ -59,23 +62,25 @@ const MenuBar = () => {
         onClick={handleMenuBtn}
       ><MenuIcon />
       </button>
-
+      {/* menu component */}
       {isModalVisible && (
         <div className='fixed top-0 left-0 flex items-center justify-center z-50 h-full w-[75%] sm:w-[30%]'>
           <div className='relative flex flex-col gap-4 bg-gray-50 shadow-lg h-full w-full'>
             <button 
               className='absolute right-2 top-1 font-bold text-2xl cursor-pointer p-2'
               onClick={handleCloseBtn}
-            >
-              <CloseIcon className='hover:text-red-500'/>
+            ><CloseIcon className='hover:text-red-500'/>
             </button>
             <div className='mt-8 p-8'>
               <div className=' flex justify-between items-center'>
                 <span className='font-bold'>All Projects</span>
                 <CreateNewProject />
               </div>
+              <SearchBar allProjectNames={allProjectNames}/>
+
+              {/* all projects elements */}
               <div className='flex flex-col gap-2 mt-8'>
-                {allProjectsList.map(project => (
+                {allProjectNames.map(project => (
                   <div
                     key={project.projectId}
                     className='border flex justify-between items-center rounded-md hover:border hover:border-blue-500 bg-gray-50 shadow-lg hover:shadow-blue-500 hover:shadow-sm'
